@@ -1,9 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, } from 'react'
+import { Link} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Signup() {
+  const navigate = useNavigate();
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -12,6 +15,8 @@ export default function Signup() {
     e.preventDefault()
     
     console.log('Signup attempt with:', { name, email, password })
+    navigate('/page1');
+
   }
 
   return (

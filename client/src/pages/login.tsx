@@ -1,10 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-
+import { Link, Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -12,6 +13,7 @@ export default function Login() {
     e.preventDefault()
     // Handle login logic here
     console.log('Login attempt with:', { email, password })
+    navigate('/take-quiz')
   }
 
   return (
