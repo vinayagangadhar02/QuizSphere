@@ -1,11 +1,19 @@
-import express from 'express'
-const app=express()
 
-const authSignUp=(req,res,next)=>{
-const {name,email,password}=req.body;
-if (!name || !email || !password) {
-    return res.status(400).json({ error: 'All fields are required' });
-  }
-  next();
+import jwt from 'jsonwebtoken';
+
+
+const authentication=(req,res,next)=>{
+const token=req.header('Authorization')?.split(' ')[1];
+if(!token){
+    return res.status(403).json({ message: 'No token, authorization denied' });
 }
-export {authSignUp}
+try{
+const decoded=jwt.verify(token,123);
+req.user=decoded;
+next();
+}
+catch (error) {
+    res.status(401).json({ message: 'Invalid or expired token' });
+}
+}
+export {authentication}

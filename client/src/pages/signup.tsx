@@ -3,19 +3,26 @@
 import { useState, } from 'react'
 import { Link} from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
-
+import { useAxios } from '@/context/AxiosContext';
 
 export default function Signup() {
   const navigate = useNavigate();
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('');
+const axios=useAxios();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit =async  (e: React.FormEvent) => {
     e.preventDefault()
-    
-    console.log('Signup attempt with:', { name, email, password })
+    try{
+    const response=await axios.post('/signup',{name,email,password});
+    console.log('Signup successful:', response.data);
     navigate('/page1');
+    }
+    catch(error:any){
+      setError(error.response?.data?.message || 'Signup failed. Please try again.');
+    }
 
   }
 
@@ -27,6 +34,7 @@ export default function Signup() {
             Create your account
           </h2>
         </div>
+        {error && <p className="text-red-500 text-center">{error}</p>}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <input type="hidden" name="remember" defaultValue="true" />
           <div className="rounded-md shadow-sm -space-y-px">
