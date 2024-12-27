@@ -1,18 +1,40 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { PlusCircle } from 'lucide-react'
 import SubjectModal from '../../components/SubjectModal'
 import SubjectCard from '../../components/SubjectCard'
+import { useAxios } from '@/context/AxiosContext'
 
 export default function Home1() {
-  const [subjects, setSubjects] = useState<Array<{ id: number, title: string, description: string }>>([])
+  const [subjects, setSubjects] = useState<Array<{ _id: string, title: string, description: string }>>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const axios = useAxios()
 
-  const addSubject = (subject: { title: string, description: string }) => {
-    setSubjects([...subjects, { id: Date.now(), ...subject }])
-    setIsModalOpen(false)
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const response = await axios.get('/page1')
+         setSubjects(response.data)
+         console.log(subjects)
+      } catch (error) {
+        console.error('Error fetching subjects:', error)
+      }
+    }
+    fetchSubjects()
+  }, [subjects])
+
+  const addSubject = async (subject: { title: string, description: string }) => {
+    try {
+      const response = await axios.post('/page1', subject)
+      if (response.status === 201) {
+        setSubjects([...subjects, response.data])
+      }
+      setIsModalOpen(false)
+    } catch (error) {
+      console.error('Error adding subject:', error)
+    }
   }
 
   return (
@@ -25,11 +47,10 @@ export default function Home1() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {subjects.map((subject) => (
-          <SubjectCard key={subject.id} {...subject} />
+          <SubjectCard key={subject._id} {...subject} />
         ))}
       </div>
       <SubjectModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={addSubject} />
     </main>
   )
 }
-

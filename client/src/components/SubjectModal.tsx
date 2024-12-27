@@ -13,6 +13,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 
+
 interface SubjectModalProps {
   isOpen: boolean
   onClose: () => void
@@ -25,7 +26,7 @@ export default function SubjectModal({ isOpen, onClose, onSubmit }: SubjectModal
 
   const handleSubmit = () => {
     onSubmit({ title, description })
-    setTitle('')
+    setTitle(title)
     setDescription('')
   }
 

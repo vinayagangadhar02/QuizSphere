@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode } from 'react';
-import axiosInstance from '../api/axios';
+import axiosInstance from '../api/axios'; 
 
 type AxiosContextType = typeof axiosInstance;
 

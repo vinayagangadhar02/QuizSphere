@@ -3,12 +3,13 @@ import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/comp
 import { Button } from "@/components/ui/button"
 
 interface SubjectCardProps {
-  id: number
+  _id: string
   title: string
   description: string
 }
 
-export default function SubjectCard({ id, title, description }: SubjectCardProps) {
+export default function SubjectCard({ _id, title, description }: SubjectCardProps) {
+  
   return (
     <Card>
       <CardHeader>
@@ -16,7 +17,7 @@ export default function SubjectCard({ id, title, description }: SubjectCardProps
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardFooter>
-        <Link to={`/add-questions/${id}`}>
+        <Link to={`/add-questions/${_id}`}>
           <Button>Add Questions</Button>
         </Link>
       </CardFooter>

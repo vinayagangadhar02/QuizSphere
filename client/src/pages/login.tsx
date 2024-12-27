@@ -3,17 +3,36 @@
 import { useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
+import { useAxios } from '@/context/AxiosContext';
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const axios =useAxios()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit =async  (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle login logic here
-    console.log('Login attempt with:', { email, password })
-    navigate('/take-quiz')
+    try{
+      const response=await axios.post('/login',{
+        email,
+        password
+      })
+      const token=response.data.token;
+      const isAdmin=response.data.isAdmin;
+      localStorage.setItem('jwttoken',token)
+      console.log(isAdmin)
+      if(!isAdmin)
+      navigate('/take-quiz')
+      else
+      navigate('/page1');
+    }
+    catch(error){
+      console.error('Login failed:', error)
+      setError('Invalid email or password')
+    }
+
   }
 
   return (
@@ -37,7 +56,7 @@ export default function Login() {
                 type="email"
                 autoComplete="email"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                className="appearance-none rounded-none text-white relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -53,14 +72,14 @@ export default function Login() {
                 type="password"
                 autoComplete="current-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                className="appearance-none rounded-none relative text-white block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
-
+          {error && <div className="text-red-600 text-center">{error}</div>} 
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <input

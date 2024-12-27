@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Card } from "@/components/ui/card"
 import { Trash2, Edit } from 'lucide-react'
+import { useAxios } from '@/context/AxiosContext'
 
 interface Question {
   question: string
@@ -20,6 +21,7 @@ export default function QuestionForm() {
   const [correctAnswer, setCorrectAnswer] = useState('0')
   const [questions, setQuestions] = useState<Question[]>([])
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
+  const axios=useAxios()
 
   const handleAnswerChange = (index: number, value: string) => {
     const newAnswers = [...answers]

@@ -1,1 +1,0 @@
-MONGO_URI="mongodb+srv://vinayagangadhar2004:123123123@cluster0.ckzkg.mongodb.net/"
