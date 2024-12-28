@@ -28,3 +28,26 @@ export const getAllSubjects = async (req, res) => {
       return res.status(500).json({ message: 'Error fetching subjects' });
     }
   };
+
+
+
+export const getSubjectById = async (req, res) => {
+  try {
+    const { subjectId } = req.params;
+    console.log(subjectId)
+    console.log("heloooooooooooooooooooooooooooooooooooooooooo")
+    const subject = await Subject.findById(subjectId);
+
+    if (!subject) {
+      return res.status(404).json({ message: 'Subject not found' });
+    }
+
+    res.json(subject);  // Return the subject data if found
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+

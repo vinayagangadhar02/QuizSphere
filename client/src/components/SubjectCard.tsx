@@ -18,7 +18,7 @@ export default function SubjectCard({ _id, title, description }: SubjectCardProp
       </CardHeader>
       <CardFooter>
         <Link to={`/add-questions/${_id}`}>
-          <Button>Add Questions</Button>
+          <Button className='bg-indigo-600 dark:text-white hover:bg-indigo-700'>Add Questions</Button>
         </Link>
       </CardFooter>
     </Card>

@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Sun, Moon } from 'lucide-react'
+import { useTheme } from '@/ColorContext/ColorContext'
 
 const Navbar = () => {
   const [mounted, setMounted] = useState(false)
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
-
+  const [theme1, setTheme1] = useState<'light' | 'dark'>('light')
+  const { theme, toggleTheme } = useTheme();
   useEffect(() => {
    
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null
     if (savedTheme) {
-      setTheme(savedTheme)
+      setTheme1(savedTheme)
     }
     setMounted(true)
   }, [])
@@ -20,14 +21,14 @@ const Navbar = () => {
     element?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark'
-    setTheme(newTheme)
-    localStorage.setItem('theme', newTheme)
-  }
+  // const toggleTheme = () => {
+  //   const newTheme = theme1 === 'dark' ? 'light' : 'dark'
+  //   setTheme1(newTheme)
+  //   localStorage.setItem('theme', newTheme)
+  // }
 
   return (
-    <nav className="bg-white dark:bg-gray-800 shadow-lg">
+    <nav className="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">

@@ -1,10 +1,10 @@
 import Question from '../models/Question.js';
 
 export const addQuestion = async (req, res) => {
-  const { subjectId, questionText, answers, correctAnswer } = req.body;
+  const { subjectId, question, answers, correctAnswer } = req.body;
 
   try {
-    const newQuestion = new Question({ subjectId, questionText, answers, correctAnswer });
+    const newQuestion = new Question({ subjectId, question, answers, correctAnswer });
     await newQuestion.save();
     res.status(201).json(newQuestion);
   } catch (error) {
