@@ -1,23 +1,48 @@
 
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link} from "react-router-dom";
+import { useState,useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAxios } from "@/context/AxiosContext";
 
 export default function InstructionsPage() {
   const { subjectId } = useParams<{ subjectId: string }>();
-
+  const [subjectTitle, setSubjectTitle] = useState('')
+  const axios=useAxios()
   if (!subjectId) {
     return <p className="text-center text-xl">Subject not found</p>;
   }
 
+  const capitalizeFirstLetter = (string:String) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  useEffect(() => {
+    const fetchSubject = async () => {
+      try {
+        if (subjectId) {
+          
+          const response = await axios.get(`/subject/${subjectId}`);
+          setSubjectTitle(capitalizeFirstLetter(response.data.title));
+          console.log(subjectTitle);
+        }
+      } catch (error) {
+        console.error('Error fetching subject', error);
+      }
+    };
+  
+    fetchSubject();
+  }, [subjectId]);
+
+
   return (
-    <div className="container mx-auto py-8">
+    <div className="container my-12 mx-auto py-8">
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center">Quiz Instructions</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-lg">Welcome to the {subjectId.charAt(0).toUpperCase() + subjectId.slice(1)} quiz!</p>
+          <p className="text-lg">Welcome to the  {subjectTitle} quiz!</p>
           <ul className="list-disc list-inside space-y-2">
             <li>The quiz consists of 10 questions.</li>
             <li>You have 10 minutes to complete the quiz.</li>

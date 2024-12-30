@@ -21,7 +21,19 @@ export const LogoutProvider: React.FC<LogoutProviderProps> = ({ children }) => {
     const confirmLogout = window.confirm("Are you sure you want to log out?");
     
     if (confirmLogout) {
-      localStorage.removeItem('token'); 
+      localStorage.removeItem('jwttoken'); 
+      localStorage.removeItem('quizAnswers')
+
+      Object.keys(localStorage)
+      .filter(key => key.startsWith('timer-'))
+      .forEach(key => localStorage.removeItem(key));
+      setIsAuthenticated(false); 
+      window.location.href = '/';
+    
+  
+      Object.keys(localStorage)
+      .filter(key => key.startsWith('questions-'))
+      .forEach(key => localStorage.removeItem(key));
       setIsAuthenticated(false); 
       window.location.href = '/';
     }

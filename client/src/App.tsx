@@ -9,6 +9,8 @@ import QuestionForm from './components/AddQuestions';
 import InstructionsPage from './pages/Users/InstructionsPage';
 import QuizPage from './pages/Users/QuizPage';
 import TakeQuiz from './components/SubjectCard1';
+import ConfirmPage from './pages/Users/ConfirmPage';
+import ResultsPage from './pages/Users/ResultsPage';
 
 
 const App: React.FC = () => {
@@ -25,6 +27,8 @@ const App: React.FC = () => {
           <Route path="/add-questions/:subjectId" element={<QuestionForm />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/confirmpage" element={<ConfirmPage/>} />
+          <Route path="/results" element={<ResultsPage/>} />
         </Routes>
      
     </Router>
