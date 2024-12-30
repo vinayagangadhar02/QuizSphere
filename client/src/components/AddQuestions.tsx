@@ -42,14 +42,17 @@ export default function QuestionForm() {
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const axios = useAxios()
 
+  const capitalizeFirstLetter = (string:String) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
   useEffect(() => {
     const fetchSubject = async () => {
       try {
         if (subjectId) {
           
           const response = await axios.get(`/subject/${subjectId}`);
-          setSubjectTitle(response.data.title);
-          console.log(response.data.title);
+          setSubjectTitle(capitalizeFirstLetter(response.data.title));
+          console.log(subjectTitle);
         }
       } catch (error) {
         console.error('Error fetching subject', error);
@@ -149,7 +152,7 @@ export default function QuestionForm() {
         </div>
         <div className="flex items-center">
   {subjectTitle ? (
-    <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+    <span className="mx-10 text-2xl font-bold text-indigo-800 dark:text-indigo-200">
       {subjectTitle}
     </span>
   ) : (

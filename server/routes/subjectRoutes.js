@@ -10,6 +10,6 @@ router.post('/subject',authentication,createSubject);
 
 router.get('/subject',authentication,getAllSubjects);
 
-router.get('subject/:id',authentication, getSubjectById);
+router.get('/subject/:id',authentication, getSubjectById);
 
 export default router;
