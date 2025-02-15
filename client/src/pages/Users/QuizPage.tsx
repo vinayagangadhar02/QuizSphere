@@ -14,7 +14,6 @@ interface Question {
   _id?: string;
   question: string;
   answers: string[];
-  correctAnswer: string;
 }
 
 const QuizPage = ({ subjectId }: { subjectId: string }) => {
@@ -39,18 +38,15 @@ const QuizPage = ({ subjectId }: { subjectId: string }) => {
   useEffect(() => {
     const storedQuestions = localStorage.getItem(`questions-${subjectId}`);
     
-    // Check if questions are already stored in localStorage (i.e., the quiz session has already started)
     if (storedQuestions) {
-      // Load shuffled questions from localStorage
       setQuestions(JSON.parse(storedQuestions));
     } else {
-      // Fetch questions and shuffle them only the first time
-      axios.get<Question[]>(`/questions/${subjectId}`)
+      axios.get<Question[]>(`/questions/question/${subjectId}`)
         .then(response => {
-          const shuffledQuestions: Question[] = shuffleArray(response.data); // Shuffle questions
+          const shuffledQuestions: Question[] = shuffleArray(response.data);
           setQuestions(shuffledQuestions);
-          // Store the shuffled questions in localStorage (optional)
-          localStorage.setItem(`questions-${subjectId}`, JSON.stringify(shuffledQuestions)); // Save shuffled order
+          
+          localStorage.setItem(`questions-${subjectId}`, JSON.stringify(shuffledQuestions));
         })
         .catch(error => console.error('Error fetching questions', error));
     }
@@ -124,7 +120,7 @@ const QuizPage = ({ subjectId }: { subjectId: string }) => {
 
   const handleSubmit = () => {
     console.log('Quiz submitted:', answers);
-    navigate('/confirmpage', { state: { answers, questions } });
+    navigate(`/confirmpage/${subjectId}`, { state: { answers, questions } });
   };
 
   const formatTime = (seconds: number) => {

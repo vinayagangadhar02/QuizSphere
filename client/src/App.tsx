@@ -27,7 +27,7 @@ const App: React.FC = () => {
           <Route path="/add-questions/:subjectId" element={<QuestionForm />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/confirmpage" element={<ConfirmPage/>} />
+          <Route path="/confirmpage/:subjectId" element={<ConfirmPage/>} />
           <Route path="/results" element={<ResultsPage/>} />
         </Routes>
      
