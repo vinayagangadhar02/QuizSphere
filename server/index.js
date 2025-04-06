@@ -7,7 +7,7 @@ import subjectRoutes from './routes/subjectRoutes.js'
 import questionRoutes from './routes/questionRoutes.js'
 // import { submitQuiz } from './controllers/resultsController.js';
 import adminResetPassRoute from './routes/adminResetPassRoute.js'
-
+import userResetPassRoute from './routes/userResetPassRoute.js'
 
 const app = express();
 
@@ -22,6 +22,7 @@ app.use('/api',subjectRoutes)
 app.use('/api/questions', questionRoutes);
 // app.use('/api',submitQuiz)
 app.use('/api',adminResetPassRoute)
+app.use('/api',userResetPassRoute)
 
 const PORT =  3000;
 

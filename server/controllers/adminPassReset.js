@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import Admin from '../models/Admin.js';
 import { sendOTPEmail } from '../utils/sendEmail.js';
+import { error } from 'console';
 
 
 export const sendAdminOTP = async (req, res) => {
@@ -9,7 +10,7 @@ export const sendAdminOTP = async (req, res) => {
     const { email } = req.body;
 
     const admin = await Admin.findOne({ email });
-    if (!admin) return res.status(404).json({ message: 'Admin not found' });
+    if (!admin) return res.status(404).json({ error: 'Admin not found' });
 
     const otp = crypto.randomInt(100000, 999999).toString();
     admin.resetOTP = otp;
@@ -21,7 +22,7 @@ export const sendAdminOTP = async (req, res) => {
     res.json({ message: 'OTP sent to your email' });
   } catch (error) {
     console.error('Error sending admin OTP:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -32,13 +33,13 @@ export const verifyAdminOTP = async (req, res) => {
 
     const admin = await Admin.findOne({ email });
     if (!admin || admin.resetOTP !== otp || Date.now() > admin.resetOTPExpires) {
-      return res.status(400).json({ message: 'Invalid or expired OTP' });
+      return res.status(400).json({ error: 'Invalid or expired OTP' });
     }
 
     res.json({ message: 'OTP verified successfully' });
   } catch (error) {
     console.error('Error verifying OTP:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -48,7 +49,7 @@ export const newAdminPassword = async (req, res) => {
     const { email, newPassword } = req.body;
 
     const admin = await Admin.findOne({ email });
-    if (!admin) return res.status(404).json({ message: 'Admin not found' });
+    if (!admin) return res.status(404).json({ error: 'Admin not found' });
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     admin.password = hashedPassword;
@@ -60,6 +61,6 @@ export const newAdminPassword = async (req, res) => {
     res.json({ message: 'Password reset successful' });
   } catch (error) {
     console.error('Error setting new password:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ error: 'Server error' });
   }
 };

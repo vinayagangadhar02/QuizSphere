@@ -7,7 +7,7 @@ import axiosInstance from "@/api/axios";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export default function AdminSetNewPassword() {
+export default function UserSetNewPassword() {
   const location = useLocation();
   const navigate = useNavigate();
   const { email } = location.state || {};
@@ -20,7 +20,7 @@ export default function AdminSetNewPassword() {
       <div className="min-h-screen flex items-center justify-center bg-[#121829] text-white">
         <div className="text-center space-y-4">
           <p className="text-red-500">Missing email or OTP.</p>
-          <Link to="/admin-forgot-password" className="text-[#5A5FE0] hover:underline">
+          <Link to="/user-forgot-password" className="text-[#5A5FE0] hover:underline">
             Go back to forgot password
           </Link>
         </div>
@@ -32,15 +32,15 @@ export default function AdminSetNewPassword() {
     e.preventDefault();
     
     try {
-      const res = await axiosInstance.post("/admin-reset-password", {
+      const res = await axiosInstance.post("/user-reset-password", {
         email,
         newPassword,
       });
       setMessage(res.data?.message);
       setError(res.data?.error)
-      setTimeout(() => navigate("/admin-login"), 2000);
+      setTimeout(() => navigate("/user-login"), 2000);
     } catch (err: any) {
-      setError(err?.error || "Failed to reset password.");
+      setError(err?.message || "Failed to reset password.");
     }
   };
 
@@ -50,6 +50,7 @@ export default function AdminSetNewPassword() {
         <h1 className="text-2xl font-bold text-center mb-8">Set New Password</h1>
         {message && <p className="text-center text-sm text-green-400 mb-4">{message}</p>}
         {error && <p className="text-center text-sm text-green-400 mb-4">{error}</p>}
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label htmlFor="newPassword" className="text-sm font-medium">New Password</label>
@@ -69,7 +70,7 @@ export default function AdminSetNewPassword() {
           </Button>
         </form>
         <div className="mt-8 text-center">
-          <Link to="/admin-login" className="inline-flex items-center text-[#5A5FE0] hover:underline">
+          <Link to="/user-login" className="inline-flex items-center text-[#5A5FE0] hover:underline">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to login
           </Link>

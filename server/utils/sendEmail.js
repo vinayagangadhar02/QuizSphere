@@ -12,7 +12,7 @@ export const sendOTPEmail = async (email, otp) => {
   });
 
   await transporter.sendMail({
-    from: `"Admin Support" <${process.env.EMAIL_USER}>`,
+    from: `"Quiz App" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: 'Reset Password OTP',
     html: `Your OTP to reset password is: <b>${otp}</b> . It is valid for 10 minutes.`,

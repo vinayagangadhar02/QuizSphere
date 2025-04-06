@@ -7,12 +7,12 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft } from "lucide-react";
 import axiosInstance from "@/api/axios";
 
-export default function AdminForgotPassword() {
+export default function UserForgotPassword() {
   const [step, setStep] = useState<"email" | "otp">("email");
   const [email, setEmail] = useState("");
   const [otpDigits, setOtpDigits] = useState(Array(6).fill(""));
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [error,setError]=useState("")
   const [timeLeft, setTimeLeft] = useState(600); 
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
   const navigate = useNavigate();
@@ -32,21 +32,18 @@ export default function AdminForgotPassword() {
     }
   }, [step]);
 
-
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axiosInstance.post("/admin-send-otp", { email });
+      const res = await axiosInstance.post("/user-send-otp", { email });
       setMessage(res.data?.message);
       setError(res.data?.error);
       setStep("otp");
     } catch (err: any) {
-      console.log(err)
-      setError(err?.error || "Failed to send OTP");
+      setError(err?.error|| "Failed to send OTP");
     }
   };
 
-  
   const handleOTPChange = (index: number, value: string) => {
     if (!/^\d?$/.test(value)) return;
     const updated = [...otpDigits];
@@ -62,17 +59,17 @@ export default function AdminForgotPassword() {
     e.preventDefault();
     const otp = otpDigits.join("");
     if (otp.length !== 6) {
-      setMessage("Please enter a valid 6-digit OTP.");
+      setError("Please enter a valid 6-digit OTP.");
       return;
     }
 
     try {
-      const res = await axiosInstance.post("/admin-verify-otp", {
+      const res = await axiosInstance.post("/user-verify-otp", {
         email,
         otp,
       });
       if (res.data.message.includes("successful")) {
-        navigate("/admin-set-password", { state: {email} });
+        navigate("/user-set-password", { state: {email} });
       } else {
         setError(res.data.error);
       }
@@ -145,7 +142,7 @@ export default function AdminForgotPassword() {
         )}
 
         <div className="mt-8 text-center">
-          <Link to="/admin-login" className="inline-flex items-center text-[#5A5FE0] hover:underline">
+          <Link to="/user-login" className="inline-flex items-center text-[#5A5FE0] hover:underline">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to login
           </Link>

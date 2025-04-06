@@ -15,6 +15,8 @@ import ConfirmPage from './pages/Users/ConfirmPage';
 import ResultsPage from './pages/Users/ResultsPage';
 import AdminForgotPassword from './pages/Admin/passwordReset';
 import AdminSetNewPassword from './pages/Admin/adminNewPass';
+import UserForgotPassword from './pages/Users/passwordReset';
+import UserSetNewPassword from './pages/Users/userNewPass';
 
 
 const App: React.FC = () => {
@@ -37,6 +39,9 @@ const App: React.FC = () => {
           <Route path="/results" element={<ResultsPage/>} />
           <Route path="/admin-reset" element={<AdminForgotPassword/>} />
           <Route path="/admin-set-password" element={<AdminSetNewPassword />} />
+          <Route path="/user-reset" element={<UserForgotPassword/>} />
+          <Route path="/user-set-password" element={<UserSetNewPassword />} />
+
 
         </Routes>
      
