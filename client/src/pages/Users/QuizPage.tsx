@@ -27,30 +27,23 @@ const QuizPage = ({ subjectId }: { subjectId: string }) => {
   const [subjectTitle, setSubjectTitle] = useState('');
   const { answers, setAnswer, clearAnswer } = useQuiz(); // Using the QuizContext
 
-  const shuffleArray = <T,>(array: T[]): T[] => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1)); // Random index
-      [array[i], array[j]] = [array[j], array[i]]; // Swap elements
-    }
-    return array;
-  };
+ 
   
   useEffect(() => {
     const storedQuestions = localStorage.getItem(`questions-${subjectId}`);
-    
+  
     if (storedQuestions) {
       setQuestions(JSON.parse(storedQuestions));
     } else {
       axios.get<Question[]>(`/questions/question/${subjectId}`)
         .then(response => {
-          const shuffledQuestions: Question[] = shuffleArray(response.data);
-          setQuestions(shuffledQuestions);
-          
-          localStorage.setItem(`questions-${subjectId}`, JSON.stringify(shuffledQuestions));
+          setQuestions(response.data); 
+          localStorage.setItem(`questions-${subjectId}`, JSON.stringify(response.data));
         })
         .catch(error => console.error('Error fetching questions', error));
     }
   }, [subjectId, axios]);
+  
   
 
   

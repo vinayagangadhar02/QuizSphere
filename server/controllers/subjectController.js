@@ -2,11 +2,14 @@ import Subject from '../models/Subject.js';
 
 
 export const createSubject = async (req, res) => {
-  const { title, description } = req.body;
+  let { title, description } = req.body; // use let here
 
   if (!title || !description) {
     return res.status(400).json({ message: 'Title and description are required' });
   }
+
+
+  title = title.trim().toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
 
   try {
     const newSubject = new Subject({ title, description });

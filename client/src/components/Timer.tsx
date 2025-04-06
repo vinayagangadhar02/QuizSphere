@@ -7,7 +7,7 @@ interface TimerProps {
     const seconds = timeLeft % 60
   
     return (
-      <div className="text-2xl font-bold">
+      <div className="ml-40 text-2xl font-bold">
         Time Left: {minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}
       </div>
     )

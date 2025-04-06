@@ -1,4 +1,4 @@
-'use client'
+
 
 import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
@@ -38,7 +38,7 @@ export default function Home1() {
       try {
         const response = await axios.get('/subject')
          setSubjects(response.data)
-         console.log(subjects)
+      
       } catch (error) {
         console.error('Error fetching subjects:', error)
       }

@@ -97,6 +97,14 @@ button:focus-visible {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem
   }
+  .nav-link {
+    @apply text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium;
+  }
+  
+  .nav-link-mobile {
+    @apply text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-4 py-2 text-sm;
+  }
+  
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;

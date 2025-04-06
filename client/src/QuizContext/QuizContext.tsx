@@ -30,7 +30,7 @@ export const QuizProvider: React.FC<QuizProviderProps> = ({ children }) => {
 
   const clearAnswer = (index: number) => {
     const newAnswers = [...answers];
-    newAnswers[index] = ''; // You could use null or undefined instead of an empty string
+    newAnswers[index] = ''; 
     setAnswers(newAnswers);
   };
 

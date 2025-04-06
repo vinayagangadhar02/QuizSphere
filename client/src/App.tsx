@@ -2,8 +2,10 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from '../src/pages/page'
-import Signup from '../../client/src/pages/signup'
-import Login from '../../client/src/pages/login';
+import UserLogin from './pages/Users/login';
+import AdminLogin from './pages/Admin/login';
+import UserSignup from './pages/Users/signup';
+import AdminSignup from './pages/Admin/signup';
 import Home1 from './pages/Admin/page1';
 import QuestionForm from './components/AddQuestions';
 import InstructionsPage from './pages/Users/InstructionsPage';
@@ -11,6 +13,8 @@ import QuizPage from './pages/Users/QuizPage';
 import TakeQuiz from './components/SubjectCard1';
 import ConfirmPage from './pages/Users/ConfirmPage';
 import ResultsPage from './pages/Users/ResultsPage';
+import AdminForgotPassword from './pages/Admin/passwordReset';
+import AdminSetNewPassword from './pages/Admin/adminNewPass';
 
 
 const App: React.FC = () => {
@@ -25,10 +29,15 @@ const App: React.FC = () => {
           <Route path="/instructions/:subjectId" element={<InstructionsPage />} />
           <Route path="/quiz/:subjectId" element={<QuizPageWrapper />} />
           <Route path="/add-questions/:subjectId" element={<QuestionForm />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/user-signup" element={<UserSignup />} />
+          <Route path="/user-login" element={<UserLogin />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/admin-signup" element={<AdminSignup />} />
           <Route path="/confirmpage/:subjectId" element={<ConfirmPage/>} />
           <Route path="/results" element={<ResultsPage/>} />
+          <Route path="/admin-reset" element={<AdminForgotPassword/>} />
+          <Route path="/admin-set-password" element={<AdminSetNewPassword />} />
+
         </Routes>
      
     </Router>
@@ -38,7 +47,7 @@ const QuizPageWrapper = () => {
   const { subjectId } = useParams<{ subjectId: string }>();
 
   if (!subjectId) {
-    // Handle the case where subjectId is undefined
+    
     return <div>Error: Subject ID is missing</div>;
   }
 

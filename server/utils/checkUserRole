@@ -1,4 +1,0 @@
-export const checkUserRole = (email) => {
-  const adminEmail = 'admin@gmail.com';
-  return email==adminEmail
-};
