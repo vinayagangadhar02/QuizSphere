@@ -1,75 +1,35 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAxios } from '@/context/AxiosContext';
+import axiosInstance from '@/context/AxiosContext';
+import { useParams } from 'react-router-dom';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { answers, questions } = location.state;
-  const axios = useAxios();
+ 
 
-  interface Question {
-    _id: string;
-    question: string;
-    answers: string[];
-  }
+const { subjectId } = useParams<{ subjectId: string }>();
 
-  interface SubmissionData {
-    questionId: string;
-    selectedAnswer: string;
-  }
+  const {answers,questions} = location.state;
+
+
 
   const handleConfirm = async () => {
-    const quizIdKey = Object.keys(localStorage).find((key) =>
-      key.startsWith('questions-')
-    );
-    const questionsData: Question[] | null = quizIdKey
-      ? JSON.parse(localStorage.getItem(quizIdKey) || 'null')
-      : null;
-    
-    const quizAnswers: string[] | null = JSON.parse(
-      localStorage.getItem('quizAnswers') || 'null'
-    );
-    const userId: string | null = JSON.parse(localStorage.getItem('userId') || 'null');
-
-    if (!questionsData || !quizAnswers || !userId) {
-      console.error('Missing data in localStorage!');
-      return;
-    }
-
     try {
-      const submissionData: SubmissionData[] = questionsData.map((question, index) => ({
-        questionId: question._id,
-        selectedAnswer: quizAnswers[index] || '',
-      }));
+      const questionIds = questions.map((q: { _id: any; }) => q._id);
 
-      const payload = {
-        submissionData,
-        userId,
-        quizId: quizIdKey!.split('-')[1],
-      };
-
-      const response = await axios.post('/submit-quiz', payload, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await axiosInstance.post('/submit-quiz',  {
+       
+          subjectId, questionIds, answers
+       
       });
-
-      if (response.status !== 200) {
-        throw new Error('Failed to submit quiz results');
-      }
-
-      localStorage.removeItem(quizIdKey!);
-      localStorage.removeItem('quizAnswers');
       
-
-      navigate('/results', {
-        state: {
-          userId,
-          quizId: quizIdKey!.split('-')[1],
-        },
-      });
+      if (response.status === 200) {
+        localStorage.removeItem('questions');
+        localStorage.removeItem('quizAnswers');
+       navigate('/results',{state:subjectId})
+      }
     } catch (error) {
       console.error('Error submitting quiz:', error);
     }

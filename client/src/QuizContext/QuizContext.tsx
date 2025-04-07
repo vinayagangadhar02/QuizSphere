@@ -13,11 +13,10 @@ interface QuizProviderProps {
 }
 
 export const QuizProvider: React.FC<QuizProviderProps> = ({ children }) => {
-  // Load saved answers directly from localStorage during initialization
+
   const savedAnswers = localStorage.getItem('quizAnswers');
   const [answers, setAnswers] = useState<string[]>(savedAnswers ? JSON.parse(savedAnswers) : []);
 
-  // Save answers to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('quizAnswers', JSON.stringify(answers));
   }, [answers]);

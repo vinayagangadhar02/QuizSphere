@@ -13,6 +13,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
     }
 
     const existingUser = await User.findOne({ email });
+    console.log(existingUser)
     if (existingUser) {
       return res.status(400).json({ error: 'Email is already taken' });
     }

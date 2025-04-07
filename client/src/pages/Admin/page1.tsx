@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { PlusCircle } from 'lucide-react'
 import SubjectModal from '../../components/SubjectModal'
 import SubjectCard from '../../components/SubjectCard'
-import { useAxios } from '@/context/AxiosContext'
+import axiosInstance from '@/context/AxiosContext'
 import { Link } from 'react-router-dom'
 import { useTheme } from '@/ColorContext/ColorContext'
 import { Sun, Moon } from 'lucide-react'
@@ -29,14 +29,14 @@ export default function Home1() {
   
   const [subjects, setSubjects] = useState<Array<{ _id: string, title: string, description: string }>>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const axios = useAxios()
+
 
   
 
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const response = await axios.get('/subject')
+        const response = await axiosInstance.get('/subject')
          setSubjects(response.data)
       
       } catch (error) {
@@ -48,7 +48,7 @@ export default function Home1() {
 
   const addSubject = async (subject: { title: string, description: string }) => {
     try {
-      const response = await axios.post('/subject', subject)
+      const response = await axiosInstance.post('/subject', subject)
       if (response.status === 201) {
         setSubjects([...subjects, response.data])
       }

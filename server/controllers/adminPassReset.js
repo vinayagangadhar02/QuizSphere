@@ -2,7 +2,9 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import Admin from '../models/Admin.js';
 import { sendOTPEmail } from '../utils/sendEmail.js';
-import { error } from 'console';
+
+
+
 
 
 export const sendAdminOTP = async (req, res) => {

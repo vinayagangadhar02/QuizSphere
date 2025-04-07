@@ -1,21 +1,21 @@
 'use client'
 
 import { useState } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
-import { useAxios } from '@/context/AxiosContext';
+import axiosInstance from '@/context/AxiosContext';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const axios =useAxios()
+
 
   const handleSubmit =async  (e: React.FormEvent) => {
     e.preventDefault()
     try{
-      const response=await axios.post('/AdminLogin',{
+      const response=await axiosInstance.post('/AdminLogin',{
         email,
         password
       })

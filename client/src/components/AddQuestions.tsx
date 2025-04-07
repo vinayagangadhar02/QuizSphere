@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Card } from "@/components/ui/card"
 import { Trash2, Edit } from 'lucide-react'
-import { useAxios } from '@/context/AxiosContext'
+import axiosInstance from '@/context/AxiosContext'
 import { useParams } from 'react-router-dom'
 import { Sun, Moon } from 'lucide-react'
 import { useTheme } from '@/ColorContext/ColorContext'
@@ -40,7 +40,7 @@ export default function QuestionForm() {
   const [correctAnswer, setCorrectAnswer] = useState('0')
   const [questions, setQuestions] = useState<Question[]>([])
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
-  const axios = useAxios()
+
 
   const capitalizeFirstLetter = (string:String) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -50,7 +50,7 @@ export default function QuestionForm() {
       try {
         if (subjectId) {
           
-          const response = await axios.get(`/subject/${subjectId}`);
+          const response = await axiosInstance.get(`/subject/${subjectId}`);
           setSubjectTitle(capitalizeFirstLetter(response.data.title));
           console.log(subjectTitle);
         }
@@ -94,12 +94,12 @@ export default function QuestionForm() {
     try {
       if (editingIndex !== null) {
         const questionId = questions[editingIndex]._id
-        const response = await axios.put('/questions/update', { questionId, updatedQuestion: questionData })
+        const response = await axiosInstance.put('/questions/update', { questionId, updatedQuestion: questionData })
         const updatedQuestions = [...questions]
         updatedQuestions[editingIndex] = response.data
         setQuestions(updatedQuestions)
       } else {
-        const response = await axios.post('/questions/add', questionData)
+        const response = await axiosInstance.post('/questions/add', questionData)
         setQuestions([...questions, response.data])
       }
       resetForm()
@@ -124,7 +124,7 @@ export default function QuestionForm() {
       if(!confirmDelete){
         return
       }
-      await axios.delete('/questions/delete', { data: { questionId } })
+      await axiosInstance.delete('/questions/delete', { data: { questionId } })
       setQuestions(questions.filter((_, i) => i !== index))
     } catch (error) {
       console.error('Error deleting question', error)
@@ -134,11 +134,11 @@ export default function QuestionForm() {
 
   useEffect(() => {
     if (subjectId) {
-      axios.get(`/questions/${subjectId}`)
+      axiosInstance.get(`/questions/${subjectId}`)
         .then(response => setQuestions(response.data))
         .catch(error => console.error('Error fetching questions', error))
     }
-  }, [subjectId, axios])
+  }, [subjectId, axiosInstance])
 
   return (
     <>

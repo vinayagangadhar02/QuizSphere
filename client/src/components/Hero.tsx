@@ -1,6 +1,22 @@
+import { useEffect } from 'react';
 import {Link} from 'react-router-dom'
 
 const Hero = () => {
+
+  useEffect(() => {
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith('questions-')) {
+        localStorage.removeItem(key);
+      }
+      else if(key.startsWith('quizAnswers')){
+        localStorage.removeItem(key);
+      }
+      else if(key.startsWith('quizStart')){
+        localStorage.removeItem(key);
+      }
+    });
+  }, []);
+  
   return (
     <section id="home" className="bg-gray-100 dark:bg-gray-900 py-20">
       <div className="max-w-7xl mx-auto px-4 py-20 sm:px-6 lg:px-8">

@@ -53,21 +53,7 @@ export const getQuestionsBySubject = async (req, res) => {
 
 
 
-// export const getQuestionsBySubjectForUsers=async(req,res)=>{
-//   try {
-//     const { subjectId } = req.params;
-//     const questions = await Question.find({ subjectId }).select('_id question answers');
 
-//     if (!questions || questions.length === 0) {
-//       return res.status(404).json({ message: 'No questions found for this subject' });
-//     }
-
-//     res.json(questions); 
-//   } catch (error) {
-//     console.error('Error fetching questions:', error);
-//     res.status(500).json({ message: 'Internal Server Error' });
-//   }
-// }
 
 
 
@@ -77,7 +63,7 @@ function shuffleArray(array) {
     [array[i], array[j]] = [array[j], array[i]];
   }
   const result = array.slice(0, 10);
-  console.log("✅ Returning shuffled:", result.length);
+  
   return result;
 }
 
@@ -90,7 +76,9 @@ export const getQuestionsBySubjectForUsers = async (req, res) => {
       return res.status(404).json({ message: 'No questions found for this subject' });
     }
 
-    console.log("📥 Total questions fetched:", rawQuestions.length);
+    
+  
+    
 
     const questions = rawQuestions.map(q => q.toObject());
     

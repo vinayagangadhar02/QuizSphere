@@ -1,42 +1,54 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from "@/components/ui/button";
-import { useNavigate } from 'react-router-dom';
-import confetti from 'canvas-confetti';
 import { useEffect, useState } from 'react';
-import { useAxios } from '@/context/AxiosContext'; // Assuming you have a context for Axios requests
-
-interface Result {
-  score: number;
-  percentage: number;
-  message: string;
-}
+import confetti from 'canvas-confetti';
+import axiosInstance from '@/context/AxiosContext';
 
 const ResultsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const axios = useAxios();
-  const { quizId, userId } = location.state; // Expecting quizId and userId passed via state
-  const [result, setResult] = useState<Result | null>(null);
 
-  // Fetch results from the backend
+  const  subjectId = location.state; 
+  const [score, setScore] = useState<number | null>(0);
+  const [message, setMessage] = useState<string>('');
+ 
+
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const response = await axios.get(`/quiz/results/${userId}/${quizId}`);
-        setResult(response.data); // Assuming the backend returns { score, percentage, message }
+
+       
+        const response = await axiosInstance.get(`/results`, {
+          params: { subjectId }
+        });
+        
+        const scoreData = response.data.score
+
+        setScore(scoreData);
+        
+
+        if (scoreData >= 8) {
+          setMessage('🏆 Excellent performance! You nailed it!');
+          confetti();
+        } else if (scoreData >= 5) {
+          setMessage('🎯 Good job! A little more practice and you’ll be perfect.');
+        } else {
+          setMessage('📚 Keep practicing! Every expert was once a beginner.');
+        }
+
       } catch (error) {
         console.error("Error fetching quiz results:", error);
       }
     };
 
     fetchResults();
-  }, [axios, userId, quizId]);
+  }, []);
 
-  if (!result) {
+  if (score === null) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-md shadow-xl">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold">Loading Results...</CardTitle>
           </CardHeader>
@@ -48,44 +60,16 @@ const ResultsPage = () => {
     );
   }
 
-  // Calculate score and percentage from the backend response
-  const { score, percentage, message } = result;
-
-  // Trigger confetti for high scores (above 70%)
-  useEffect(() => {
-    if (percentage > 70) {
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-      });
-    }
-  }, [percentage]);
-
-  // Determine score color based on percentage
-  const getScoreColor = () => {
-    if (percentage >= 80) return 'text-green-500';
-    if (percentage >= 60) return 'text-yellow-500';
-    return 'text-red-500';
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-white dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold">Quiz Results</CardTitle>
+          <CardTitle className="text-4xl font-extrabold">Quiz Results</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col items-center">
-          <div className={`text-6xl font-bold mb-4 ${getScoreColor()}`}>
-            {score} / {result ? result.percentage / 10 : 0}
-          </div>
-          <div className="text-2xl font-semibold mb-6">
-            {percentage}%
-          </div>
-          <div className="text-xl mb-8">
-            {message}
-          </div>
-          <Button onClick={() => navigate('/')} className="w-full max-w-xs">
+        <CardContent className="flex flex-col items-center space-y-4">
+          <div className="text-5xl font-bold text-green-600">{score}/10</div>
+          <p className="text-center text-lg text-gray-700 dark:text-gray-300">{message}</p>
+          <Button onClick={() => navigate('/')} className="w-full max-w-xs mt-4">
             Back to Home
           </Button>
         </CardContent>

@@ -6,9 +6,9 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { useTheme } from '@/ColorContext/ColorContext';
 import { Sun, Moon } from 'lucide-react';
-import { useAxios } from '@/context/AxiosContext';
+import axiosInstance from '@/context/AxiosContext';
 import { useQuiz } from '../../QuizContext/QuizContext';
-import QuestionCard from '@/components/QuestionCard';
+
 
 interface Question {
   _id?: string;
@@ -19,13 +19,13 @@ interface Question {
 const QuizPage = ({ subjectId }: { subjectId: string }) => {
   const navigate = useNavigate();
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(600); 
   const [questions, setQuestions] = useState<Question[]>([]);
-  const axios = useAxios();
+
   const [mounted, setMounted] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const [subjectTitle, setSubjectTitle] = useState('');
-  const { answers, setAnswer, clearAnswer } = useQuiz(); // Using the QuizContext
+  const { answers, setAnswer, clearAnswer } = useQuiz(); 
 
  
   
@@ -35,14 +35,14 @@ const QuizPage = ({ subjectId }: { subjectId: string }) => {
     if (storedQuestions) {
       setQuestions(JSON.parse(storedQuestions));
     } else {
-      axios.get<Question[]>(`/questions/question/${subjectId}`)
+      axiosInstance.get<Question[]>(`/questions/question/${subjectId}`)
         .then(response => {
           setQuestions(response.data); 
           localStorage.setItem(`questions-${subjectId}`, JSON.stringify(response.data));
         })
         .catch(error => console.error('Error fetching questions', error));
     }
-  }, [subjectId, axios]);
+  }, [subjectId, axiosInstance]);
   
   
 
@@ -54,22 +54,12 @@ const QuizPage = ({ subjectId }: { subjectId: string }) => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   if (subjectId) {
-  //     axios.get(`/questions/${subjectId}`)
-  //       .then(response => {
-  //         setQuestions(shuffleArray(response.data)); // Shuffle questions
-  //       })
-  //       .catch(error => console.error('Error fetching questions', error));
-  //   }
-  // }, [subjectId, axios]);
-  
 
   useEffect(() => {
     const fetchSubject = async () => {
       try {
         if (subjectId) {
-          const response = await axios.get(`/subject/${subjectId}`);
+          const response = await axiosInstance.get(`/subject/${subjectId}`);
           setSubjectTitle(capitalizeFirstLetter(response.data.title));
         }
       } catch (error) {
@@ -79,21 +69,49 @@ const QuizPage = ({ subjectId }: { subjectId: string }) => {
 
     fetchSubject();
   }, [subjectId]);
+  
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timer);
-          handleSubmit();
-          return 0;
-        }
-        return prevTime - 1;
-      });
+    const startTime = localStorage.getItem(`quizStartTime-${subjectId}`);
+    
+    if (!startTime) {
+      localStorage.setItem(`quizStartTime-${subjectId}`, Date.now().toString());
+    }
+  
+    const intervalId = setInterval(() => {
+      const quizStartTime = parseInt(localStorage.getItem(`quizStartTime-${subjectId}`) || Date.now().toString());
+      const elapsedSeconds = Math.floor((Date.now() - quizStartTime) / 1000);
+      const remaining = Math.max(600 - elapsedSeconds, 0);
+      setTimeLeft(remaining);
+  
+      if (remaining <= 0) {
+        clearInterval(intervalId);
+        autoSubmitQuiz();
+      }
     }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
+  
+    return () => clearInterval(intervalId);
+  }, [subjectId, questions, answers]);
+  
+  const autoSubmitQuiz = async () => {
+    try {
+      const questionIds = questions.map((q) => q._id);
+      const response = await axiosInstance.post('/submit-quiz', {
+        subjectId,
+        questionIds,
+        answers,
+      });
+  
+      if (response.status === 200) {
+        localStorage.removeItem('questions');
+        localStorage.removeItem('quizAnswers');
+        navigate('/results', { state: { subjectId } });
+      }
+    } catch (error) {
+      console.error('Error submitting quiz:', error);
+    }
+  };
+  
 
   const capitalizeFirstLetter = (string: String) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -112,7 +130,7 @@ const QuizPage = ({ subjectId }: { subjectId: string }) => {
   };
 
   const handleSubmit = () => {
-    console.log('Quiz submitted:', answers);
+  
     navigate(`/confirmpage/${subjectId}`, { state: { answers, questions } });
   };
 

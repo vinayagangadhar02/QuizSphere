@@ -36,7 +36,7 @@ export default function QuizContent({
   currentQuestionIndex,
   answers,
 }: QuizContentProps) {
-  const [timeLeft, setTimeLeft] = useState(600) // 10 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(600) 
 
   useEffect(() => {
     const timer = setInterval(() => {

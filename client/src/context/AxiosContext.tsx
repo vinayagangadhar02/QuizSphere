@@ -1,26 +1,14 @@
-import { createContext, useContext, ReactNode } from 'react';
-import axiosInstance from '../api/axios'; 
+import axios from 'axios';
 
-type AxiosContextType = typeof axiosInstance;
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:3000/api',
+  headers: { 'Content-Type': 'application/json' },
+});
 
-const AxiosContext = createContext<AxiosContextType | null>(null);
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('jwttoken');
+  if (token) config.headers.authorization = `Bearer ${token}`;
+  return config;
+});
 
-interface AxiosProviderProps {
-  children: ReactNode;
-}
-
-export const AxiosProvider = ({ children }: AxiosProviderProps) => {
-  return (
-    <AxiosContext.Provider value={axiosInstance}>
-      {children}
-    </AxiosContext.Provider>
-  );
-};
-
-export const useAxios = (): AxiosContextType => {
-  const context = useContext(AxiosContext);
-  if (!context) {
-    throw new Error('useAxios must be used within an AxiosProvider');
-  }
-  return context;
-};
+export default axiosInstance;

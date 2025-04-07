@@ -1,9 +1,8 @@
-'use client'
 
 import { useState, } from 'react'
 import { Link} from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
-import { useAxios } from '@/context/AxiosContext';
+import axiosInstance from '@/context/AxiosContext';
 
 export default function UserSignup() {
   const navigate = useNavigate();
@@ -11,20 +10,21 @@ export default function UserSignup() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('');
-const axios=useAxios();
 
   const handleSubmit =async  (e: React.FormEvent) => {
     e.preventDefault()
     try{
-    const response=await axios.post('/userSignup',{name,email,password});
+    const response=await axiosInstance.post('/userSignup',{name,email,password});
     if(response?.data?.token){
       localStorage.setItem("jwttoken",response.data.token)
     }
-    console.log('Signup successful:', response.data);
+   
+    
     navigate('/take-quiz')
     }
     catch(error:any){
-      setError(error.response?.data?.message || 'Signup failed. Please try again.');
+      console.log(error)
+      setError(error.response.data.error || 'Signup failed. Please try again.');
     }
 
   }

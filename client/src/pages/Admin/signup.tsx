@@ -3,7 +3,7 @@
 import { useState, } from 'react'
 import { Link} from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
-import { useAxios } from '@/context/AxiosContext';
+import axiosInstance from '@/context/AxiosContext';
 
 export default function AdminSignup() {
   const navigate = useNavigate();
@@ -11,20 +11,20 @@ export default function AdminSignup() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('');
-const axios=useAxios();
+
 
   const handleSubmit =async  (e: React.FormEvent) => {
     e.preventDefault()
     try{
-    const response=await axios.post('/AdminSignup',{name,email,password});
+    const response=await axiosInstance.post('/AdminSignup',{name,email,password});
     if(response?.data?.token){
       localStorage.setItem("jwttoken",response.data.token)
     }
-    console.log('Signup successful:', response.data);
+   
     navigate('/page1')
     }
     catch(error:any){
-      setError(error.response?.data?.message || 'Signup failed. Please try again.');
+      setError(error.response.data.error  || 'Signup failed. Please try again.');
     }
 
   }

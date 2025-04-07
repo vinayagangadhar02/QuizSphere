@@ -3,12 +3,12 @@ import { useParams, Link} from "react-router-dom";
 import { useState,useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAxios } from "@/context/AxiosContext";
+import axiosInstance from "@/context/AxiosContext";
 
 export default function InstructionsPage() {
   const { subjectId } = useParams<{ subjectId: string }>();
   const [subjectTitle, setSubjectTitle] = useState('')
-  const axios=useAxios()
+
   if (!subjectId) {
     return <p className="text-center text-xl">Subject not found</p>;
   }
@@ -22,9 +22,9 @@ export default function InstructionsPage() {
       try {
         if (subjectId) {
           
-          const response = await axios.get(`/subject/${subjectId}`);
+          const response = await axiosInstance.get(`/subject/${subjectId}`);
           setSubjectTitle(capitalizeFirstLetter(response.data.title));
-          console.log(subjectTitle);
+         
         }
       } catch (error) {
         console.error('Error fetching subject', error);
@@ -34,6 +34,10 @@ export default function InstructionsPage() {
     fetchSubject();
   }, [subjectId]);
 
+
+  function handleClick(){
+    localStorage.setItem(`quizStartTime-${subjectId}`, Date.now().toString());
+  }
 
   return (
     <div className="container my-12 mx-auto py-8">
@@ -54,7 +58,7 @@ export default function InstructionsPage() {
         </CardContent>
         <CardFooter className="justify-center">
           <Link to={`/quiz/${subjectId}`}>
-            <Button size="lg">Start Quiz</Button>
+            <Button size="lg" onClick={handleClick}>Start Quiz</Button>
           </Link>
         </CardFooter>
       </Card>

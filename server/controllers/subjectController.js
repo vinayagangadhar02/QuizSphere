@@ -2,7 +2,7 @@ import Subject from '../models/Subject.js';
 
 
 export const createSubject = async (req, res) => {
-  let { title, description } = req.body; // use let here
+  let { title, description } = req.body; 
 
   if (!title || !description) {
     return res.status(400).json({ message: 'Title and description are required' });
