@@ -3,11 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import axiosInstance from '@/context/AxiosContext';
 import { useParams } from 'react-router-dom';
+import { useQuiz } from '@/QuizContext/QuizContext';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
- 
+ const {clearAll}=useQuiz()
 
 const { subjectId } = useParams<{ subjectId: string }>();
 
@@ -28,6 +29,7 @@ const { subjectId } = useParams<{ subjectId: string }>();
       if (response.status === 200) {
         localStorage.removeItem('questions');
         localStorage.removeItem('quizAnswers');
+        clearAll()
        navigate('/results',{state:subjectId})
       }
     } catch (error) {

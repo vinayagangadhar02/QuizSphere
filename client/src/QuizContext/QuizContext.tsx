@@ -4,6 +4,7 @@ interface QuizContextType {
   answers: string[];
   setAnswer: (index: number, answer: string) => void;
   clearAnswer: (index: number) => void;
+  clearAll: () => void;
 }
 
 const QuizContext = createContext<QuizContextType | undefined>(undefined);
@@ -33,8 +34,12 @@ export const QuizProvider: React.FC<QuizProviderProps> = ({ children }) => {
     setAnswers(newAnswers);
   };
 
+  const clearAll = () => {
+    setAnswers([]);
+  }
+
   return (
-    <QuizContext.Provider value={{ answers, setAnswer, clearAnswer }}>
+    <QuizContext.Provider value={{ answers, setAnswer, clearAnswer, clearAll }}>
       {children}
     </QuizContext.Provider>
   );

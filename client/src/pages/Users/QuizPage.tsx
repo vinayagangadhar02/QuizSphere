@@ -25,7 +25,7 @@ const QuizPage = ({ subjectId }: { subjectId: string }) => {
   const [mounted, setMounted] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const [subjectTitle, setSubjectTitle] = useState('');
-  const { answers, setAnswer, clearAnswer } = useQuiz(); 
+  const { answers, setAnswer, clearAnswer, clearAll } = useQuiz(); 
 
  
   
@@ -81,7 +81,7 @@ const QuizPage = ({ subjectId }: { subjectId: string }) => {
     const intervalId = setInterval(() => {
       const quizStartTime = parseInt(localStorage.getItem(`quizStartTime-${subjectId}`) || Date.now().toString());
       const elapsedSeconds = Math.floor((Date.now() - quizStartTime) / 1000);
-      const remaining = Math.max(600 - elapsedSeconds, 0);
+      const remaining = Math.max(25 - elapsedSeconds, 0);
       setTimeLeft(remaining);
   
       if (remaining <= 0) {
@@ -105,7 +105,8 @@ const QuizPage = ({ subjectId }: { subjectId: string }) => {
       if (response.status === 200) {
         localStorage.removeItem('questions');
         localStorage.removeItem('quizAnswers');
-        navigate('/results', { state: { subjectId } });
+        clearAll()
+        navigate('/results', { state: subjectId });
       }
     } catch (error) {
       console.error('Error submitting quiz:', error);
@@ -184,7 +185,8 @@ const QuizPage = ({ subjectId }: { subjectId: string }) => {
             </CardHeader>
             <CardContent>
               <p className="mb-4">{questions[currentQuestion].question}</p>
-              <RadioGroup value={answers[currentQuestion]} onValueChange={(answer) => setAnswer(currentQuestion, answer)}>
+              {currentQuestion}
+              <RadioGroup value={answers[currentQuestion]} onValueChange={(answer) => setAnswer(currentQuestion, answer)} key={currentQuestion}>
                 {questions[currentQuestion].answers.map((option, index) => (
                   <div className="flex items-center space-x-2" key={index}>
                     <RadioGroupItem value={option} id={`option-${index}`} />
